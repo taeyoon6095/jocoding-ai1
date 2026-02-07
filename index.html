@@ -20,16 +20,82 @@
     body {
       margin: 0;
       font-family: "Noto Sans KR", sans-serif;
-      background:
-        radial-gradient(1200px 600px at 10% 0%, #eef3ff, transparent 55%),
-        radial-gradient(900px 500px at 90% 10%, #fff5dd, transparent 50%),
-        var(--bg);
+      background: var(--bg);
       color: var(--ink);
       min-height: 100vh;
       display: grid;
       place-items: center;
       padding: 32px;
     }
+    .bg {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background: #ffffff;
+      overflow: hidden;
+      opacity: 0.3;
+    }
+    .taegeuk {
+      position: absolute;
+      width: min(55vmin, 520px);
+      height: min(55vmin, 520px);
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      background: linear-gradient(180deg, #c60c30 0 50%, #003478 50% 100%);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.08);
+    }
+    .taegeuk::before,
+    .taegeuk::after {
+      content: "";
+      position: absolute;
+      width: 50%;
+      height: 50%;
+      border-radius: 50%;
+      left: 25%;
+    }
+    .taegeuk::before {
+      top: 0;
+      background: #003478;
+    }
+    .taegeuk::after {
+      bottom: 0;
+      background: #c60c30;
+    }
+    .trigram {
+      position: absolute;
+      width: 120px;
+      display: grid;
+      gap: 6px;
+    }
+    .bar {
+      display: block;
+      height: 10px;
+      border-radius: 999px;
+      background: #0b0b0b;
+    }
+    .bar.broken {
+      position: relative;
+      background: transparent;
+    }
+    .bar.broken::before,
+    .bar.broken::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      height: 10px;
+      width: 45%;
+      background: #0b0b0b;
+      border-radius: 999px;
+    }
+    .bar.broken::before { left: 0; }
+    .bar.broken::after { right: 0; }
+
+    .trigram.geon { left: 12%; top: 16%; transform: rotate(-35deg); }
+    .trigram.ri { right: 12%; top: 16%; transform: rotate(35deg); }
+    .trigram.gam { left: 12%; bottom: 16%; transform: rotate(35deg); }
+    .trigram.gon { right: 12%; bottom: 16%; transform: rotate(-35deg); }
     .card {
       width: min(720px, 92vw);
       background: var(--card);
@@ -125,6 +191,29 @@
   </style>
 </head>
 <body>
+  <div class="bg" aria-hidden="true">
+    <div class="taegeuk"></div>
+    <div class="trigram geon">
+      <span class="bar"></span>
+      <span class="bar"></span>
+      <span class="bar"></span>
+    </div>
+    <div class="trigram ri">
+      <span class="bar broken"></span>
+      <span class="bar"></span>
+      <span class="bar broken"></span>
+    </div>
+    <div class="trigram gam">
+      <span class="bar"></span>
+      <span class="bar broken"></span>
+      <span class="bar"></span>
+    </div>
+    <div class="trigram gon">
+      <span class="bar broken"></span>
+      <span class="bar broken"></span>
+      <span class="bar broken"></span>
+    </div>
+  </div>
   <div class="card">
     <div class="header">
       <div>
