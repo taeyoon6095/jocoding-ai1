@@ -97,6 +97,14 @@
       background: var(--result);
       border: 1px dashed var(--border);
     }
+    .result.is-animating .ball {
+      animation: pop 320ms ease;
+    }
+    @keyframes pop {
+      0% { transform: scale(0.6); opacity: 0; }
+      60% { transform: scale(1.08); opacity: 1; }
+      100% { transform: scale(1); }
+    }
     .ball {
       width: 44px;
       height: 44px;
@@ -193,6 +201,9 @@
       });
 
       metaEl.textContent = `총 ${count}개, 범위 ${min}~${max}`;
+      resultEl.classList.remove('is-animating');
+      void resultEl.offsetWidth;
+      resultEl.classList.add('is-animating');
     }
 
     btn.addEventListener('click', generateNumbers);
