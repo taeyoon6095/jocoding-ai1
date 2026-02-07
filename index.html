@@ -54,24 +54,7 @@
     }
     p { margin: 0 0 18px; color: var(--muted); }
 
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 16px;
-      margin-bottom: 12px;
-    }
-    .theme-toggle {
-      width: auto;
-      padding: 8px 12px;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      background: transparent;
-      color: var(--ink);
-      font-size: 14px;
-      cursor: pointer;
-      white-space: nowrap;
-    }
+    .header { margin-bottom: 12px; }
 
     .controls {
       display: grid;
@@ -126,18 +109,19 @@
     @media (max-width: 640px) {
       .controls { grid-template-columns: 1fr; }
       h1 { font-size: 24px; }
-      .header { flex-direction: column; align-items: flex-start; }
     }
   </style>
 </head>
 <body>
+  <script>
+    document.documentElement.setAttribute('data-theme', 'light');
+  </script>
   <div class="card">
     <div class="header">
       <div>
         <h1>로또 번호 생성기</h1>
         <p>범위와 개수를 설정한 뒤 버튼을 눌러 무작위 번호를 생성하세요.</p>
       </div>
-      <button id="themeToggle" class="theme-toggle" type="button">다크 모드</button>
     </div>
 
     <div class="controls">
@@ -168,22 +152,6 @@
     const resultEl = document.getElementById('result');
     const metaEl = document.getElementById('meta');
     const btn = document.getElementById('generate');
-    const themeToggle = document.getElementById('themeToggle');
-
-    function applyTheme(theme) {
-      document.documentElement.setAttribute('data-theme', theme);
-      themeToggle.textContent = theme === 'dark' ? '화이트 모드' : '다크 모드';
-    }
-
-    const savedTheme = localStorage.getItem('theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    applyTheme(savedTheme || (prefersDark ? 'dark' : 'light'));
-    themeToggle.addEventListener('click', () => {
-      const current = document.documentElement.getAttribute('data-theme');
-      const next = current === 'dark' ? 'light' : 'dark';
-      applyTheme(next);
-      localStorage.setItem('theme', next);
-    });
 
     function randInt(min, max) {
       return Math.floor(Math.random() * (max - min + 1)) + min;
