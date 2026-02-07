@@ -1,0 +1,175 @@
+﻿<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>로또 번호 생성기</title>
+  <style>
+    :root {
+      --bg: #f4efe6;
+      --card: #fffaf2;
+      --ink: #1c1c1c;
+      --accent: #1e5f74;
+      --accent-2: #f2a154;
+      --border: #e5d9c5;
+    }
+    body {
+      margin: 0;
+      font-family: "Noto Sans KR", sans-serif;
+      background: radial-gradient(1000px 600px at 10% 10%, #fff2dc, #f4efe6);
+      color: var(--ink);
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 32px;
+    }
+    .card {
+      width: min(720px, 92vw);
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 28px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: 28px;
+      letter-spacing: -0.5px;
+    }
+    p { margin: 0 0 18px; color: #444; }
+
+    .controls {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    label { font-size: 14px; color: #555; display: block; margin-bottom: 6px; }
+    input, button {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      font-size: 16px;
+      background: white;
+    }
+    button {
+      background: var(--accent);
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: 700;
+      transition: transform 0.08s ease, background 0.2s ease;
+    }
+    button:hover { background: #174a5c; }
+    button:active { transform: translateY(1px); }
+
+    .result {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      min-height: 60px;
+      align-items: center;
+      padding: 12px;
+      border-radius: 12px;
+      background: #fff;
+      border: 1px dashed var(--border);
+    }
+    .ball {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      background: var(--accent-2);
+      color: #1b1b1b;
+      box-shadow: inset 0 -4px 0 rgba(0,0,0,0.08);
+    }
+    .meta { margin-top: 10px; font-size: 13px; color: #666; }
+
+    @media (max-width: 640px) {
+      .controls { grid-template-columns: 1fr; }
+      h1 { font-size: 24px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>로또 번호 생성기</h1>
+    <p>범위와 개수를 설정한 뒤 버튼을 눌러 무작위 번호를 생성하세요.</p>
+
+    <div class="controls">
+      <div>
+        <label for="count">개수</label>
+        <input id="count" type="number" min="1" max="15" value="6" />
+      </div>
+      <div>
+        <label for="min">최소값</label>
+        <input id="min" type="number" min="1" value="1" />
+      </div>
+      <div>
+        <label for="max">최대값</label>
+        <input id="max" type="number" min="1" value="45" />
+      </div>
+    </div>
+
+    <button id="generate">번호 생성</button>
+
+    <div class="result" id="result" aria-live="polite"></div>
+    <div class="meta" id="meta"></div>
+  </div>
+
+  <script>
+    const countEl = document.getElementById('count');
+    const minEl = document.getElementById('min');
+    const maxEl = document.getElementById('max');
+    const resultEl = document.getElementById('result');
+    const metaEl = document.getElementById('meta');
+    const btn = document.getElementById('generate');
+
+    function randInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function generateNumbers() {
+      const count = Number(countEl.value);
+      const min = Number(minEl.value);
+      const max = Number(maxEl.value);
+
+      if (!Number.isInteger(count) || !Number.isInteger(min) || !Number.isInteger(max)) {
+        metaEl.textContent = '숫자를 올바르게 입력하세요.';
+        return;
+      }
+      if (min > max) {
+        metaEl.textContent = '최소값이 최대값보다 클 수 없습니다.';
+        return;
+      }
+      const range = max - min + 1;
+      if (count > range) {
+        metaEl.textContent = '범위보다 많은 개수는 뽑을 수 없습니다.';
+        return;
+      }
+
+      const set = new Set();
+      while (set.size < count) {
+        set.add(randInt(min, max));
+      }
+      const numbers = Array.from(set).sort((a, b) => a - b);
+
+      resultEl.innerHTML = '';
+      numbers.forEach(n => {
+        const ball = document.createElement('div');
+        ball.className = 'ball';
+        ball.textContent = n;
+        resultEl.appendChild(ball);
+      });
+
+      metaEl.textContent = `총 ${count}개, 범위 ${min}~${max}`;
+    }
+
+    btn.addEventListener('click', generateNumbers);
+    generateNumbers();
+  </script>
+</body>
+</html>
