@@ -6,17 +6,33 @@
   <title>로또 번호 생성기</title>
   <style>
     :root {
-      --bg: #f4efe6;
+      --bg-start: #fff2dc;
+      --bg-end: #f4efe6;
       --card: #fffaf2;
       --ink: #1c1c1c;
+      --muted: #444;
       --accent: #1e5f74;
       --accent-2: #f2a154;
       --border: #e5d9c5;
+      --result: #ffffff;
+      --button-text: #ffffff;
+    }
+    :root[data-theme="dark"] {
+      --bg-start: #1a1b20;
+      --bg-end: #0f1014;
+      --card: #1f2229;
+      --ink: #f2f2f2;
+      --muted: #c3c7cf;
+      --accent: #6fb4c8;
+      --accent-2: #f2c67a;
+      --border: #313641;
+      --result: #15171c;
+      --button-text: #0e0f12;
     }
     body {
       margin: 0;
       font-family: "Noto Sans KR", sans-serif;
-      background: radial-gradient(1000px 600px at 10% 10%, #fff2dc, #f4efe6);
+      background: radial-gradient(1000px 600px at 10% 10%, var(--bg-start), var(--bg-end));
       color: var(--ink);
       min-height: 100vh;
       display: grid;
@@ -36,7 +52,26 @@
       font-size: 28px;
       letter-spacing: -0.5px;
     }
-    p { margin: 0 0 18px; color: #444; }
+    p { margin: 0 0 18px; color: var(--muted); }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 12px;
+    }
+    .theme-toggle {
+      width: auto;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--ink);
+      font-size: 14px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
 
     .controls {
       display: grid;
@@ -51,11 +86,11 @@
       border-radius: 10px;
       border: 1px solid var(--border);
       font-size: 16px;
-      background: white;
+      background: #ffffff;
     }
     button {
       background: var(--accent);
-      color: white;
+      color: var(--button-text);
       border: none;
       cursor: pointer;
       font-weight: 700;
@@ -72,7 +107,7 @@
       align-items: center;
       padding: 12px;
       border-radius: 12px;
-      background: #fff;
+      background: var(--result);
       border: 1px dashed var(--border);
     }
     .ball {
@@ -91,13 +126,19 @@
     @media (max-width: 640px) {
       .controls { grid-template-columns: 1fr; }
       h1 { font-size: 24px; }
+      .header { flex-direction: column; align-items: flex-start; }
     }
   </style>
 </head>
 <body>
   <div class="card">
-    <h1>로또 번호 생성기</h1>
-    <p>범위와 개수를 설정한 뒤 버튼을 눌러 무작위 번호를 생성하세요.</p>
+    <div class="header">
+      <div>
+        <h1>로또 번호 생성기</h1>
+        <p>범위와 개수를 설정한 뒤 버튼을 눌러 무작위 번호를 생성하세요.</p>
+      </div>
+      <button id="themeToggle" class="theme-toggle" type="button">다크 모드</button>
+    </div>
 
     <div class="controls">
       <div>
@@ -127,6 +168,22 @@
     const resultEl = document.getElementById('result');
     const metaEl = document.getElementById('meta');
     const btn = document.getElementById('generate');
+    const themeToggle = document.getElementById('themeToggle');
+
+    function applyTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      themeToggle.textContent = theme === 'dark' ? '화이트 모드' : '다크 모드';
+    }
+
+    const savedTheme = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    applyTheme(savedTheme || (prefersDark ? 'dark' : 'light'));
+    themeToggle.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      applyTheme(next);
+      localStorage.setItem('theme', next);
+    });
 
     function randInt(min, max) {
       return Math.floor(Math.random() * (max - min + 1)) + min;
